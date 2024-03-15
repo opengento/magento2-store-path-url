@@ -1,0 +1,62 @@
+{
+    "name": "opengento/module-store-path-url",
+    "description": "This module updates the store code path in url with the country code or a custom value.",
+    "keywords": [
+        "php",
+        "magento",
+        "magento2",
+        "url",
+        "path",
+        "switcher",
+        "store",
+        "website",
+        "country",
+        "locale"
+    ],
+    "require": {
+        "php": "^8.1",
+        "psr/log": "*",
+        "magento/framework": "*",
+        "magento/module-config": "*",
+        "magento/module-directory": "*",
+        "magento/module-store": "*"
+    },
+    "require-dev": {
+        "magento/magento-coding-standard": "^33",
+        "roave/security-advisories": "dev-latest"
+    },
+    "suggest": {
+        "opengento/module-store-path-url": "This module updates the store code path in url with the country code or a custom value."
+    },
+    "type": "magento2-module",
+    "license": [
+        "MIT"
+    ],
+    "homepage": "https://github.com/opengento/magento2-store-path-url",
+    "authors": [
+        {
+            "name": "Opengento Team",
+            "email": "opengento@gmail.com",
+            "homepage": "https://opengento.fr/",
+            "role": "lead"
+        },
+        {
+            "name": "Thomas Klein",
+            "email": "thomaskein876@gmail.com",
+            "homepage": "https://www.linkedin.com/in/thomas-klein/",
+            "role": "maintainer"
+        }
+    ],
+    "support": {
+        "source": "https://github.com/opengento/magento2-store-path-url",
+        "issues": "https://github.com/opengento/magento2-store-path-url/issues"
+    },
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "Opengento\\StorePathUrl\\": ""
+        }
+    }
+}

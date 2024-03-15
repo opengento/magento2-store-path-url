@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © OpenGento, All rights reserved.
+ * See LICENSE bundled with this library for license details.
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <section id="web">
+            <group id="url">
+                <field id="use_store_path" type="select" translate="label comment" showInDefault="1" showInWebsite="0" showInStore="0" sortOrder="15" canRestore="1">
+                    <label>Custom Store Path Url</label>
+                    <source_model>Opengento\StorePathUrl\Model\Config\Source\PathTypes</source_model>
+                    <config_path>web/url/use_store_path</config_path>
+                    <depends>
+                        <field id="use_store">1</field>
+                    </depends>
+                </field>
+                <field id="custom_path_mapper" type="text" translate="label" showInDefault="1" showInWebsite="0" showInStore="0" sortOrder="15">
+                    <label>Custom Path Mapper</label>
+                    <frontend_model>Opengento\StorePathUrl\Block\Adminhtml\Config\Form\Field\StorePath</frontend_model>
+                    <backend_model>Magento\Config\Model\Config\Backend\Serialized\ArraySerialized</backend_model>
+                    <config_path>web/url/custom_path_mapper</config_path>
+                    <depends>
+                        <field id="use_store_path">custom</field>
+                    </depends>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>
