@@ -23,6 +23,7 @@
                     <backend_model>Magento\Config\Model\Config\Backend\Serialized\ArraySerialized</backend_model>
                     <config_path>web/url/custom_path_mapper</config_path>
                     <depends>
+                        <field id="use_store">1</field>
                         <field id="use_store_path">custom</field>
                     </depends>
                 </field>
