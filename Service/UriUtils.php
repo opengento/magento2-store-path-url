@@ -6,6 +6,7 @@ declare(strict_types=1);
 
 namespace Opengento\StorePathUrl\Service;
 
+use Magento\Framework\App\ScopeInterface;
 use Magento\Store\Api\Data\StoreInterface;
 
 use function ltrim;
@@ -21,14 +22,14 @@ class UriUtils
 {
     public function __construct(private PathResolver $pathResolver) {}
 
-    public function replaceStoreCode(string $url, StoreInterface $store): string
+    public function replaceScopeCode(string $url, ScopeInterface|StoreInterface $scope): string
     {
-        return $this->replaceLeadingPath($store->getCode(), $this->pathResolver->resolve($store), $url);
+        return $this->replaceLeadingPath($scope->getCode(), $this->pathResolver->resolve($scope), $url);
     }
 
-    public function replacePathCode(string $url, StoreInterface $store): string
+    public function replacePathCode(string $url, ScopeInterface|StoreInterface $scope): string
     {
-        return $this->replaceLeadingPath($this->pathResolver->resolve($store), $store->getCode(), $url);
+        return $this->replaceLeadingPath($this->pathResolver->resolve($scope), $scope->getCode(), $url);
     }
 
     private function replaceLeadingPath(string $search, string $replace, string $uri): string

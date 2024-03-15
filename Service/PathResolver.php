@@ -6,6 +6,7 @@ declare(strict_types=1);
 
 namespace Opengento\StorePathUrl\Service;
 
+use Magento\Framework\App\ScopeInterface;
 use Magento\Store\Api\Data\StoreInterface;
 use Opengento\StorePathUrl\Model\Config;
 use Opengento\StorePathUrl\Model\Config\PathType;
@@ -18,14 +19,14 @@ class PathResolver
 {
     public function __construct(private Config $config) {}
 
-    public function resolve(StoreInterface $store): string
+    public function resolve(ScopeInterface|StoreInterface $scope): string
     {
         return strtolower(match ($this->config->getStorePathType()) {
-            PathType::StoreCode => $store->getCode(),
-            PathType::CountryCode => $this->config->getCountry($store),
-            PathType::LocaleUnderscore => $this->config->getLocale($store),
-            PathType::LocaleHyphen => implode('-', explode('_', $this->config->getLocale($store))),
-            PathType::Custom => $this->config->getCustomPathMapper()[(int)$store->getId()] ?? $store->getCode(),
+            PathType::StoreCode => $scope->getCode(),
+            PathType::CountryCode => $this->config->getCountry($scope),
+            PathType::LocaleUnderscore => $this->config->getLocale($scope),
+            PathType::LocaleHyphen => implode('-', explode('_', $this->config->getLocale($scope))),
+            PathType::Custom => $this->config->getCustomPathMapper()[(int)$scope->getId()] ?? $scope->getCode(),
         });
     }
 }

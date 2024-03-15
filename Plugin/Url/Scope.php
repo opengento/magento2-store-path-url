@@ -4,14 +4,14 @@
  */
 declare(strict_types=1);
 
-namespace Opengento\StorePathUrl\Plugin\Model;
+namespace Opengento\StorePathUrl\Plugin\Url;
 
+use Magento\Framework\Url\ScopeInterface;
 use Magento\Framework\UrlInterface;
-use Magento\Store\Model\Store as SubjectStore;
 use Opengento\StorePathUrl\Model\Config;
 use Opengento\StorePathUrl\Service\UriUtils;
 
-class Store
+class Scope
 {
     public function __construct(
         private Config $config,
@@ -19,13 +19,13 @@ class Store
     ) {}
 
     public function afterGetBaseUrl(
-        SubjectStore $subject,
+        ScopeInterface $subject,
         string $baseUrl,
         string $type = UrlInterface::URL_TYPE_LINK,
         ?bool $secure = null
     ): string {
         return $type === UrlInterface::URL_TYPE_LINK && $this->config->isEnabled()
-            ? $this->uriUtils->replaceStoreCode($baseUrl, $subject)
+            ? $this->uriUtils->replaceScopeCode($baseUrl, $subject)
             : $baseUrl;
     }
 }

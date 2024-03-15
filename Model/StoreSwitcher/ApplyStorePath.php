@@ -20,6 +20,6 @@ class ApplyStorePath implements StoreSwitcherInterface
 
     public function switch(StoreInterface $fromStore, StoreInterface $targetStore, string $redirectUrl): string
     {
-        return $this->config->isEnabled() ? $this->uriUtils->replaceStoreCode($redirectUrl, $targetStore) : $redirectUrl;
+        return $this->config->isEnabled() ? $this->uriUtils->replaceScopeCode($redirectUrl, $targetStore) : $redirectUrl;
     }
 }

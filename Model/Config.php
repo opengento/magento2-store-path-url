@@ -8,6 +8,7 @@ namespace Opengento\StorePathUrl\Model;
 
 use Magento\Directory\Helper\Data;
 use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Framework\App\ScopeInterface as AppScopeInterface;
 use Magento\Framework\Serialize\SerializerInterface;
 use Magento\Store\Api\Data\StoreInterface;
 use Magento\Store\Model\ScopeInterface;
@@ -37,21 +38,21 @@ class Config
         return PathType::from($this->scopeConfig->getValue(self::CONFIG_PATH_USE_STORE_PATH));
     }
 
-    public function getCountry(StoreInterface $store): string
+    public function getCountry(AppScopeInterface|StoreInterface $scope): string
     {
         return (string)$this->scopeConfig->getValue(
             Data::XML_PATH_DEFAULT_COUNTRY,
             ScopeInterface::SCOPE_STORE,
-            $store->getId()
+            $scope->getId()
         );
     }
 
-    public function getLocale(StoreInterface $store): string
+    public function getLocale(AppScopeInterface|StoreInterface $scope): string
     {
         return (string)$this->scopeConfig->getValue(
             Data::XML_PATH_DEFAULT_LOCALE,
             ScopeInterface::SCOPE_STORE,
-            $store->getId()
+            $scope->getId()
         );
     }
 

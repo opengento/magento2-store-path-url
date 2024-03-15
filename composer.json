@@ -19,7 +19,8 @@
         "magento/framework": "*",
         "magento/module-config": "*",
         "magento/module-directory": "*",
-        "magento/module-store": "*"
+        "magento/module-store": "*",
+        "magento/module-url-rewrite": "*"
     },
     "require-dev": {
         "magento/magento-coding-standard": "^33",

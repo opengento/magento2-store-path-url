@@ -10,18 +10,15 @@
         <arguments>
             <argument name="storeSwitchers" xsi:type="array">
                 <item name="revertStorePath" xsi:type="object" sortOrder="99">Opengento\StorePathUrl\Model\StoreSwitcher\RevertStorePath</item>
-                <item name="rewriteUrl" xsi:type="object" sortOrder="100">Magento\UrlRewrite\Model\StoreSwitcher\RewriteUrl</item>
+                <item name="rewriteUrl" xsi:type="object" sortOrder="100"/>
                 <item name="applyStorePath" xsi:type="object" sortOrder="101">Opengento\StorePathUrl\Model\StoreSwitcher\ApplyStorePath</item>
             </argument>
         </arguments>
     </type>
-    <type name="Magento\Store\Model\Store">
-        <plugin name="Opengento_StorePathUrl::prepend_custom_path" type="Opengento\StorePathUrl\Plugin\Model\Store"/>
+    <type name="Magento\Framework\Url\ScopeInterface">
+        <plugin name="Opengento_StorePathUrl::prepend_custom_path" type="Opengento\StorePathUrl\Plugin\Url\Scope"/>
     </type>
     <type name="Magento\Framework\App\Request\PathInfo">
         <plugin name="Opengento_StorePathUrl::replace_country_store_code" type="Opengento\StorePathUrl\Plugin\App\Request\PathInfo"/>
-    </type>
-    <type name="Magento\Store\App\Request\StorePathInfoValidator">
-        <plugin name="Opengento_StorePathUrl::replace_by_store_code" type="Opengento\StorePathUrl\Plugin\App\Request\StorePathInfoValidator"/>
     </type>
 </config>

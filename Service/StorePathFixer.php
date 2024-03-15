@@ -10,7 +10,6 @@ use Magento\Store\Api\StoreRepositoryInterface;
 use Magento\Store\Model\Store;
 
 use function parse_url;
-
 use function str_starts_with;
 
 use const PHP_URL_PATH;
@@ -30,10 +29,10 @@ class StorePathFixer
                 if ($baseUrl === '') {
                     $path = parse_url($store->getBaseUrl(), PHP_URL_PATH);
                     if (str_starts_with($requestUri . '/', $path)) {
-                        $requestUri = $this->uriUtils->replacePathCode($requestUri, $store);
+                        return $this->uriUtils->replacePathCode($requestUri, $store);
                     }
                 } elseif (str_starts_with($baseUrl . $requestUri, $store->getBaseUrl())) {
-                    $requestUri = $this->uriUtils->replacePathCode($requestUri, $store);
+                    return $this->uriUtils->replacePathCode($requestUri, $store);
                 }
             }
         }

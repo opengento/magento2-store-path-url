@@ -7,8 +7,8 @@ declare(strict_types=1);
 namespace Opengento\StorePathUrl\Plugin\App\Request;
 
 use Magento\Framework\App\Request\PathInfo as PathInfoSubject;
-use Opengento\StorePathUrl\Service\StorePathFixer;
 use Opengento\StorePathUrl\Model\Config;
+use Opengento\StorePathUrl\Service\StorePathFixer;
 
 class PathInfo
 {
