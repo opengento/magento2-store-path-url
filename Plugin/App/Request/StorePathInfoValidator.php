@@ -21,7 +21,7 @@ class StorePathInfoValidator
 
     public function beforeGetValidStoreCode(Subject $subject, Http $request, string $pathInfo = ''): array
     {
-        if ($this->config->isEnabled()) {
+        if ($pathInfo !== '' && $this->config->isEnabled()) {
             $uri = $request->getUriString();
             /** @var Store $store */
             foreach ($this->storeRepository->getList() as $store) {
