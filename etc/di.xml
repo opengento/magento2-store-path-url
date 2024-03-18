@@ -15,10 +15,15 @@
             </argument>
         </arguments>
     </type>
+    <type name="Magento\Backend\App\Request\PathInfoProcessor">
+        <arguments>
+            <argument name="subject" xsi:type="object">Opengento\StorePathUrl\App\Request\PathInfoProcessor</argument>
+        </arguments>
+    </type>
     <type name="Magento\Framework\Url\ScopeInterface">
         <plugin name="Opengento_StorePathUrl::prepend_custom_path" type="Opengento\StorePathUrl\Plugin\Url\Scope"/>
     </type>
-    <type name="Magento\Framework\App\Request\PathInfo">
-        <plugin name="Opengento_StorePathUrl::replace_country_store_code" type="Opengento\StorePathUrl\Plugin\App\Request\PathInfo"/>
+    <type name="Magento\Store\App\Request\StorePathInfoValidator">
+        <plugin name="Opengento_StorePathUrl::resolve_store_code" type="Opengento\StorePathUrl\Plugin\App\Request\StorePathInfoValidator"/>
     </type>
 </config>
