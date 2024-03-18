@@ -17,7 +17,7 @@
     </type>
     <type name="Magento\Backend\App\Request\PathInfoProcessor">
         <arguments>
-            <argument name="subject" xsi:type="object">Opengento\StorePathUrl\App\Request\PathInfoProcessor</argument>
+            <argument name="subject" xsi:type="object">Opengento\StorePathUrl\App\Request\PathInfoProcessor\Proxy</argument>
         </arguments>
     </type>
     <type name="Magento\Framework\Url\ScopeInterface">
