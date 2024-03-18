@@ -43,9 +43,10 @@ bin/magento setup:upgrade
 
 The module allows to replace the store code in url with the following options:  
 
-- Country Code, e.g: fr
-- Locale Code (separated with a hyphen), e.g: fr-fr
-- Locale Code (separated with an underscore), e.g: fr_fr
+- Country Code, e.g: be
+- Language Code, e.g: fr
+- Locale Code (separated with a hyphen), e.g: fr-be
+- Locale Code (separated with an underscore), e.g: fr_be
 - Custom (you can setup the path of your choice), e.g: emea
 
 ## Settings

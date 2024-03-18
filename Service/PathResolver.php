@@ -13,6 +13,7 @@ use Opengento\StorePathUrl\Model\Config\PathType;
 
 use function explode;
 use function implode;
+use function strtok;
 use function strtolower;
 
 class PathResolver
@@ -24,6 +25,7 @@ class PathResolver
         return strtolower(match ($this->config->getStorePathType()) {
             PathType::StoreCode => $scope->getCode(),
             PathType::CountryCode => $this->config->getCountry($scope),
+            PathType::LanguageCode => strtok($this->config->getLocale($scope), '_'),
             PathType::LocaleUnderscore => $this->config->getLocale($scope),
             PathType::LocaleHyphen => implode('-', explode('_', $this->config->getLocale($scope))),
             PathType::Custom => $this->config->getCustomPathMapper()[(int)$scope->getId()] ?? $scope->getCode(),
