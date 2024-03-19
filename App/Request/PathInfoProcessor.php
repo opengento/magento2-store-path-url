@@ -29,7 +29,7 @@ class PathInfoProcessor extends AppPathInfoProcessor
     public function process(RequestInterface $request, $pathInfo): string
     {
         $storeCode = $this->storePathInfoValidator->getValidStoreCode($request, $pathInfo);
-        if (!empty($storeCode)) {
+        if ($storeCode !== null) {
             try {
                 $path = $this->pathResolver->resolve($this->storeRepository->getActiveStoreByCode($storeCode));
             } catch (LocalizedException) {
