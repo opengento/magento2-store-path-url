@@ -11,8 +11,7 @@ use Magento\Store\Api\Data\StoreInterface;
 use Opengento\StorePathUrl\Model\Config;
 use Opengento\StorePathUrl\Model\Config\PathType;
 
-use function explode;
-use function implode;
+use function str_replace;
 use function strtok;
 use function strtolower;
 
@@ -27,7 +26,7 @@ class PathResolver
             PathType::CountryCode => $this->config->getCountry($scope),
             PathType::LanguageCode => strtok($this->config->getLocale($scope), '_'),
             PathType::LocaleUnderscore => $this->config->getLocale($scope),
-            PathType::LocaleHyphen => implode('-', explode('_', $this->config->getLocale($scope))),
+            PathType::LocaleHyphen => str_replace('_', '-', $this->config->getLocale($scope)),
             PathType::Custom => $this->config->getCustomPathMapper()[(int)$scope->getId()] ?? $scope->getCode(),
         });
     }
