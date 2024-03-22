@@ -21,14 +21,14 @@ class UriUtils
 {
     public function __construct(private PathResolver $pathResolver) {}
 
-    public function replaceScopeCode(string $url, StoreInterface $scope): string
+    public function replaceScopeCode(string $url, StoreInterface $store): string
     {
-        return $this->replaceLeadingPath($scope->getCode(), $this->pathResolver->resolve($scope), $url);
+        return $this->replaceLeadingPath($store->getCode(), $this->pathResolver->resolve($store), $url);
     }
 
-    public function replacePathCode(string $url, StoreInterface $scope): string
+    public function replacePathCode(string $url, StoreInterface $store): string
     {
-        return $this->replaceLeadingPath($this->pathResolver->resolve($scope), $scope->getCode(), $url);
+        return $this->replaceLeadingPath($this->pathResolver->resolve($store), $store->getCode(), $url);
     }
 
     private function replaceLeadingPath(string $search, string $replace, string $uri): string
