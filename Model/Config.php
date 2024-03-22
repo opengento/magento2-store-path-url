@@ -8,7 +8,6 @@ namespace Opengento\StorePathUrl\Model;
 
 use Magento\Directory\Helper\Data;
 use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\App\ScopeInterface as AppScopeInterface;
 use Magento\Framework\Serialize\SerializerInterface;
 use Magento\Store\Api\Data\StoreInterface;
 use Magento\Store\Model\ScopeInterface;
@@ -17,8 +16,9 @@ use Opengento\StorePathUrl\Model\Config\PathType;
 
 class Config
 {
-    private const CONFIG_PATH_USE_STORE_PATH = 'web/url/use_store_path';
+    private const CONFIG_PATH_STORE_PATH_URL = 'web/url/store_path_url';
     private const CONFIG_PATH_CUSTOM_PATH_MAPPER = 'web/url/custom_path_mapper';
+    private const CONFIG_PATH_UNSET_SINGLE_STORE_PATH = 'web/url/unset_single_store_path';
 
     private ?array $customPathMapper = null;
 
@@ -35,24 +35,29 @@ class Config
 
     public function getStorePathType(): PathType
     {
-        return PathType::from($this->scopeConfig->getValue(self::CONFIG_PATH_USE_STORE_PATH));
+        return PathType::from($this->scopeConfig->getValue(self::CONFIG_PATH_STORE_PATH_URL));
     }
 
-    public function getCountry(AppScopeInterface|StoreInterface $scope): string
+    public function isUnsetSingleStorePath(): bool
+    {
+        return $this->scopeConfig->isSetFlag(self::CONFIG_PATH_UNSET_SINGLE_STORE_PATH);
+    }
+
+    public function getCountry(StoreInterface $store): string
     {
         return (string)$this->scopeConfig->getValue(
             Data::XML_PATH_DEFAULT_COUNTRY,
             ScopeInterface::SCOPE_STORE,
-            $scope->getId()
+            $store->getId()
         );
     }
 
-    public function getLocale(AppScopeInterface|StoreInterface $scope): string
+    public function getLocale(StoreInterface $store): string
     {
         return (string)$this->scopeConfig->getValue(
             Data::XML_PATH_DEFAULT_LOCALE,
             ScopeInterface::SCOPE_STORE,
-            $scope->getId()
+            $store->getId()
         );
     }
 

@@ -9,10 +9,16 @@
     <system>
         <section id="web">
             <group id="url">
-                <field id="use_store_path" type="select" translate="label comment" showInDefault="1" showInWebsite="0" showInStore="0" sortOrder="15" canRestore="1">
-                    <label>Custom Store Path Url</label>
+                <field id="use_store" translate="label comment">
+                    <label>Add Store Path to Urls</label>
+                    <comment>
+                        <![CDATA[<strong class="colorRed">Warning!</strong> When using Store Path in URLs, in some cases system may not work properly if URLs without Store Path are specified in the third-party services (e.g. PayPal etc.).]]>
+                    </comment>
+                </field>
+                <field id="store_path_url" type="select" translate="label" showInDefault="1" showInWebsite="0" showInStore="0" sortOrder="15" canRestore="1">
+                    <label>Store Path Url</label>
                     <source_model>Opengento\StorePathUrl\Model\Config\Source\PathTypes</source_model>
-                    <config_path>web/url/use_store_path</config_path>
+                    <config_path>web/url/store_path_url</config_path>
                     <depends>
                         <field id="use_store">1</field>
                     </depends>
@@ -24,8 +30,18 @@
                     <config_path>web/url/custom_path_mapper</config_path>
                     <depends>
                         <field id="use_store">1</field>
-                        <field id="use_store_path">custom</field>
+                        <field id="store_path_url">custom</field>
                     </depends>
+                </field>
+                <field id="unset_single_store_path" type="select" translate="label comment" showInDefault="1" showInWebsite="0" showInStore="0" sortOrder="15" canRestore="1">
+                    <label>Unset Path for Single Store</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <config_path>web/url/unset_single_store_path</config_path>
+                    <depends>
+                        <field id="use_store">1</field>
+                        <field id="store_path_url" negative="1">custom</field>
+                    </depends>
+                    <comment>When enabled, websites with a single store won't use the Store Path in URLs.</comment>
                 </field>
             </group>
         </section>

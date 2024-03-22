@@ -9,7 +9,8 @@
     <default>
         <web>
             <url>
-                <use_store_path>store_code</use_store_path>
+                <store_path_url>store_code</store_path_url>
+                <unset_single_store_path>1</unset_single_store_path>
             </url>
         </web>
     </default>
