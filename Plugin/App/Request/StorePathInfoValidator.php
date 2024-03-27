@@ -12,6 +12,8 @@ use Magento\Store\App\Request\StorePathInfoValidator as Subject;
 use Magento\Store\Model\Store;
 use Opengento\StorePathUrl\Model\Config;
 
+use function explode;
+
 class StorePathInfoValidator
 {
     public function __construct(
@@ -22,7 +24,7 @@ class StorePathInfoValidator
     public function beforeGetValidStoreCode(Subject $subject, Http $request, string $pathInfo = ''): array
     {
         if ($pathInfo !== '' && $this->config->isEnabled()) {
-            $uri = $request->getUriString();
+            $uri = explode('?', $request->getUriString())[0] . '/';
             /** @var Store $store */
             foreach ($this->storeRepository->getList() as $store) {
                 if ($store->getId() && str_starts_with($uri, $store->getBaseUrl())) {
