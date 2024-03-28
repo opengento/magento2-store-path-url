@@ -5,7 +5,7 @@
 [![Packagist](https://img.shields.io/packagist/dt/opengento/module-store-path-url.svg?style=flat-square)](https://packagist.org/packages/opengento/module-store-path-url/stats)
 [![Packagist](https://img.shields.io/packagist/dm/opengento/module-store-path-url.svg?style=flat-square)](https://packagist.org/packages/opengento/module-store-path-url/stats)
 
-This module allows to override the country store code in url with another path value.
+This module allows to override the store code in url with another path value.
 
  - [Setup](#setup)
    - [Composer installation](#composer-installation)
@@ -48,6 +48,8 @@ The module allows to replace the store code in url with the following options:
 - Locale Code (separated with a hyphen), e.g: fr-be
 - Locale Code (separated with an underscore), e.g: fr_be
 - Custom (you can setup the path of your choice), e.g: emea
+
+Besides that, this module makes the usage of the MAGE_RUN_TYPE and MAGE_RUN_CODE variables optionals. Magento is going to be able to resolve the correct store based on its base web URL.
 
 ## Settings
 
