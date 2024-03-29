@@ -12,6 +12,7 @@ use Magento\Framework\Exception\LocalizedException;
 use Magento\Store\Api\StoreRepositoryInterface;
 use Magento\Store\App\Request\PathInfoProcessor as AppPathInfoProcessor;
 use Magento\Store\App\Request\StorePathInfoValidator;
+use Opengento\StorePathUrl\Model\Config;
 use Opengento\StorePathUrl\Service\PathResolver;
 
 use function str_starts_with;
@@ -23,11 +24,17 @@ class PathInfoProcessor extends AppPathInfoProcessor
     public function __construct(
         private StorePathInfoValidator $storePathInfoValidator,
         private PathResolver $pathResolver,
-        private StoreRepositoryInterface $storeRepository
+        private StoreRepositoryInterface $storeRepository,
+        private Config $config,
+        private AppPathInfoProcessor $subject
     ) {}
 
     public function process(RequestInterface $request, $pathInfo): string
     {
+        if (!$this->config->isEnabled()) {
+            return $this->subject->process($request, $pathInfo);
+        }
+
         $storeCode = $this->storePathInfoValidator->getValidStoreCode($request, $pathInfo);
         if ($storeCode !== null) {
             try {

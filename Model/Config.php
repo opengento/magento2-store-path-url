@@ -30,7 +30,7 @@ class Config
     public function isEnabled(): bool
     {
         return $this->scopeConfig->isSetFlag(Store::XML_PATH_STORE_IN_URL)
-            && $this->getStorePathType() !== PathType::StoreCode;
+            && ($this->getStorePathType() !== PathType::StoreCode || $this->isUnsetSingleStorePath());
     }
 
     public function getStorePathType(): PathType

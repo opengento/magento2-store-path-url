@@ -17,7 +17,6 @@ use Opengento\StorePathUrl\Model\Config;
 use function explode;
 use function parse_url;
 use function strtok;
-use function trim;
 
 use const PHP_URL_PATH;
 
@@ -33,7 +32,7 @@ class StorePathInfoValidator
         if ($this->config->isEnabled()) {
             $uri = explode('?', $request->getUriString())[0] . '/';
             if ($pathInfo === '') {
-                $pathInfo = strtok(trim(parse_url($uri, PHP_URL_PATH), '/'), '/');
+                $pathInfo = strtok(parse_url($uri, PHP_URL_PATH), '/');
             }
             $pathInfo = $pathInfo === false ? $this->resolveByWebUrl($uri) : $this->resolveByLinkUrl($uri, $pathInfo);
         }
