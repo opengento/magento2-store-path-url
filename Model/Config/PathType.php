@@ -20,7 +20,7 @@ enum PathType: string
     
     private const PHRASES = [
         self::STORE_CODE => 'Store Code',
-        self::COUNTRY_CODEe => 'Country Code',
+        self::COUNTRY_CODE => 'Country Code',
         self::LANGUAGE_CODE => 'Language Code',
         self::LOCALE_UNDERSCORE => 'Locale Code (_)',
         self::LOCALE_HYPHEN => 'Locale Code (-)',
