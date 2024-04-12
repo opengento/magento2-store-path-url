@@ -40,7 +40,8 @@ class Config
 
     public function isUnsetSingleStorePath(): bool
     {
-        return $this->scopeConfig->isSetFlag(self::CONFIG_PATH_UNSET_SINGLE_STORE_PATH);
+        return $this->scopeConfig->isSetFlag(self::CONFIG_PATH_UNSET_SINGLE_STORE_PATH)
+            && $this->getStorePathType() !== PathType::Custom;
     }
 
     public function getCountry(StoreInterface $store): string
