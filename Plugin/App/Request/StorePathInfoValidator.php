@@ -15,7 +15,6 @@ use Magento\Store\App\Request\StorePathInfoValidator as Subject;
 use Magento\Store\Model\Store;
 use Opengento\StorePathUrl\Model\Config;
 
-use function explode;
 use function parse_url;
 use function strtok;
 
@@ -31,21 +30,22 @@ class StorePathInfoValidator
     public function beforeGetValidStoreCode(Subject $subject, Http $request, string $pathInfo = ''): array
     {
         if ($this->config->isEnabled()) {
-            $uri = explode('?', $request->getUriString())[0] . '/';
-            if ($pathInfo === '') {
-                $pathInfo = parse_url($uri, PHP_URL_PATH);
-                if ($pathInfo === false) {
-                    return [$request, $pathInfo];
+            $uri = strtok($request->getUriString(), '?') . '/';
+            if ($uri !== false) {
+                if ($pathInfo === '') {
+                    $pathInfo = parse_url($uri, PHP_URL_PATH);
+                    if ($pathInfo !== false) {
+                        $pathInfo = strtok($pathInfo, '/');
+                    }
                 }
-                $pathInfo = strtok($pathInfo, '/');
+                $pathInfo = $pathInfo === false ? $this->resolveByWebUrl($uri) : $this->resolveByLinkUrl($uri);
             }
-            $pathInfo = $pathInfo === false ? $this->resolveByWebUrl($uri) : $this->resolveByLinkUrl($uri, $pathInfo);
         }
 
         return [$request, $pathInfo];
     }
 
-    private function resolveByLinkUrl(string $uri, string $pathInfo): string
+    private function resolveByLinkUrl(string $uri): string
     {
         /** @var Store $store */
         foreach ($this->storeRepository->getList() as $store) {
@@ -54,7 +54,7 @@ class StorePathInfoValidator
             }
         }
 
-        return $pathInfo;
+        return '';
     }
 
     private function resolveByWebUrl(string $uri): string
