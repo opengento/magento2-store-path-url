@@ -20,6 +20,7 @@ class Config
     private const CONFIG_PATH_STORE_PATH_URL = 'web/url/store_path_url';
     private const CONFIG_PATH_CUSTOM_PATH_MAPPER = 'web/url/custom_path_mapper';
     private const CONFIG_PATH_UNSET_SINGLE_STORE_PATH = 'web/url/unset_single_store_path';
+    private const CONFIG_PATH_BASE_URL_RESOLVER = 'web/url/base_url_resolver';
 
     private ?array $customPathMapper = null;
 
@@ -32,6 +33,11 @@ class Config
     {
         return $this->scopeConfig->isSetFlag(Store::XML_PATH_STORE_IN_URL)
             && ($this->getStorePathType() !== PathType::StoreCode || $this->isUnsetSingleStorePath());
+    }
+
+    public function isBaseUrlResolverEnabled(): bool
+    {
+        return $this->scopeConfig->isSetFlag(self::CONFIG_PATH_BASE_URL_RESOLVER);
     }
 
     public function getStorePathType(): PathType

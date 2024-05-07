@@ -11,6 +11,7 @@
             <url>
                 <store_path_url>store_code</store_path_url>
                 <unset_single_store_path>1</unset_single_store_path>
+                <base_url_resolver>1</base_url_resolver>
             </url>
         </web>
     </default>

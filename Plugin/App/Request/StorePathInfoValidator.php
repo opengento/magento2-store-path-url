@@ -29,7 +29,7 @@ class StorePathInfoValidator
 
     public function beforeGetValidStoreCode(Subject $subject, Http $request, string $pathInfo = ''): array
     {
-        if ($this->config->isEnabled()) {
+        if ($this->config->isBaseUrlResolverEnabled()) {
             $uri = strtok($request->getUriString(), '?') . '/';
             if ($uri !== false) {
                 if ($pathInfo === '') {
@@ -50,7 +50,7 @@ class StorePathInfoValidator
         /** @var Store $store */
         foreach ($this->storeRepository->getList() as $store) {
             if ($store->getId() && str_starts_with($uri, $store->getBaseUrl())) {
-                $pathInfo = $store->getCode();
+                return $store->getCode();
             }
         }
 

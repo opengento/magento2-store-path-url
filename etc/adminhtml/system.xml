@@ -43,6 +43,12 @@
                     </depends>
                     <comment>When enabled, websites with a single store won't use the Store Path in URLs.</comment>
                 </field>
+                <field id="base_url_resolver" type="select" translate="label comment" showInDefault="1" showInWebsite="0" showInStore="0" sortOrder="15" canRestore="1">
+                    <label>Use Base Url Resolver</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <config_path>web/url/base_url_resolver</config_path>
+                    <comment>When enabled, scope is resolved from the base url match.</comment>
+                </field>
             </group>
         </section>
     </system>
