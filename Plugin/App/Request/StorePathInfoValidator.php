@@ -30,16 +30,18 @@ class StorePathInfoValidator
     public function beforeGetValidStoreCode(Subject $subject, Http $request, string $pathInfo = ''): array
     {
         if ($this->config->isBaseUrlResolverEnabled()) {
+            $originalPathInfo = $pathInfo;
             $uri = strtok($request->getUriString(), '?') . '/';
             if ($uri !== false) {
                 if ($pathInfo === '') {
                     $pathInfo = parse_url($uri, PHP_URL_PATH);
                     if ($pathInfo === false) {
-                        return [$request, $pathInfo];
+                        return [$request, $originalPathInfo];
                     }
                     $pathInfo = strtok($pathInfo, '/');
                 }
                 $pathInfo = $pathInfo === false ? $this->resolveByWebUrl($uri) : $this->resolveByLinkUrl($uri);
+                $pathInfo = $pathInfo === '' ? $originalPathInfo : $pathInfo;
             }
         }
 
