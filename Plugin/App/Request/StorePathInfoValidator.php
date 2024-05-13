@@ -34,9 +34,10 @@ class StorePathInfoValidator
             if ($uri !== false) {
                 if ($pathInfo === '') {
                     $pathInfo = parse_url($uri, PHP_URL_PATH);
-                    if ($pathInfo !== false) {
-                        $pathInfo = strtok($pathInfo, '/');
+                    if ($pathInfo === false) {
+                        return [$request, $pathInfo];
                     }
+                    $pathInfo = strtok($pathInfo, '/');
                 }
                 $pathInfo = $pathInfo === false ? $this->resolveByWebUrl($uri) : $this->resolveByLinkUrl($uri);
             }
