@@ -49,7 +49,9 @@ The module allows to replace the store code in url with the following options:
 - Locale Code (separated with an underscore), e.g: fr_be
 - Custom (you can setup the path of your choice), e.g: emea
 
-Besides that, this module makes the usage of the MAGE_RUN_TYPE and MAGE_RUN_CODE variables optionals. Magento is going to be able to resolve the correct store based on its base web URL.
+This module also allows you to remove the store path in the url for websites with a single store view. This may be useful for stores with dedicated domains. This setting is automatically enabled if you choose to use the custom mapper. However, if a single store exists for a website, and a path is setup within the mapper, the path is not unset, meaning that the path configured in the mapper is used.  
+
+Besides that, this module makes the usage of the MAGE_RUN_TYPE and MAGE_RUN_CODE variables optionals. Magento is going to be able to resolve the correct store based on its base web URL. This setting can be disabled, see "Use Base Url Resolver".
 
 ## Settings
 
@@ -58,11 +60,13 @@ The configuration for this module is available in `Stores > Configuration > Web 
 ## Documentation
 
 In order to use this module, you must enable the following setting: "Add Store Code to Urls" (`web/url/use_store`).  
-A new field is added in the configuration: "Custom Store Path Url" and "Custom Path Mapper" fi the "custom" value is selected.  
+A new field is added in the configuration: "Store Path Url" and "Custom Path Mapper" if the "custom" value is selected.  
 The store path config are:  
 
-- `web/url/use_store_path`
+- `web/url/store_path_url`
 - `web/url/custom_path_mapper`
+- `unset_single_store_path`
+- `base_url_resolver`
 
 ## Support
 
