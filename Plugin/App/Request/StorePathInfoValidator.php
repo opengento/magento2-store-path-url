@@ -22,6 +22,8 @@ use const PHP_URL_PATH;
 
 class StorePathInfoValidator
 {
+    private int $stack = 0;
+
     public function __construct(
         private Config $config,
         private StoreRepositoryInterface $storeRepository
@@ -29,23 +31,30 @@ class StorePathInfoValidator
 
     public function beforeGetValidStoreCode(Subject $subject, Http $request, string $pathInfo = ''): array
     {
-        if ($this->config->isBaseUrlResolverEnabled()) {
-            $originalPathInfo = $pathInfo;
-            $uri = strtok($request->getUriString(), '?') . '/';
-            if ($uri !== false) {
-                if ($pathInfo === '') {
-                    $pathInfo = parse_url($uri, PHP_URL_PATH);
-                    if ($pathInfo === false) {
-                        return [$request, $originalPathInfo];
-                    }
-                    $pathInfo = strtok($pathInfo, '/');
-                }
-                $pathInfo = $pathInfo === false ? $this->resolveByWebUrl($uri) : $this->resolveByLinkUrl($uri);
-                $pathInfo = $pathInfo === '' ? $originalPathInfo : $pathInfo;
-            }
+        if (++$this->stack === 1 && $this->config->isBaseUrlResolverEnabled()) {
+            $storeCode = $this->resolveStoreCode($pathInfo);
+            $pathInfo = $storeCode === '' ? $pathInfo : $storeCode;
         }
+        $this->stack--;
 
         return [$request, $pathInfo];
+    }
+
+    private function resolveStoreCode(string $pathInfo): string
+    {
+        $uri = strtok($request->getUriString(), '?') . '/';
+        if ($uri !== false) {
+            if ($pathInfo === '') {
+                $pathInfo = parse_url($uri, PHP_URL_PATH);
+                if ($pathInfo === false) {
+                    return '';
+                }
+                $pathInfo = strtok($pathInfo, '/');
+            }
+            $pathInfo = $pathInfo === false ? $this->resolveByWebUrl($uri) : $this->resolveByLinkUrl($uri);
+        }
+
+        return $pathInfo;
     }
 
     private function resolveByLinkUrl(string $uri): string
