@@ -32,7 +32,7 @@ class StorePathInfoValidator
     public function beforeGetValidStoreCode(Subject $subject, Http $request, string $pathInfo = ''): array
     {
         if (++$this->stack === 1 && $this->config->isBaseUrlResolverEnabled()) {
-            $storeCode = $this->resolveStoreCode($pathInfo);
+            $storeCode = $this->resolveStoreCode($request, $pathInfo);
             $pathInfo = $storeCode === '' ? $pathInfo : $storeCode;
         }
         $this->stack--;
@@ -40,7 +40,7 @@ class StorePathInfoValidator
         return [$request, $pathInfo];
     }
 
-    private function resolveStoreCode(string $pathInfo): string
+    private function resolveStoreCode(Http $request, string $pathInfo): string
     {
         $uri = strtok($request->getUriString(), '?') . '/';
         if ($uri !== false) {
