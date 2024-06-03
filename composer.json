@@ -26,9 +26,6 @@
         "magento/magento-coding-standard": "^33",
         "roave/security-advisories": "dev-latest"
     },
-    "suggest": {
-        "opengento/module-store-path-url": "This module updates the store code path in url with the country code or a custom value."
-    },
     "type": "magento2-module",
     "license": [
         "MIT"
