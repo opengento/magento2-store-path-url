@@ -28,17 +28,24 @@ class Scope
         string $type = UrlInterface::URL_TYPE_LINK,
         ?bool $secure = null
     ): string {
-        return $this->cache[$scope->getId()][$type][(int)$secure] ??= $this->process($scope, $baseUrl, $type, $secure);
+        $isSecure = match ($secure) {
+            true => 'true',
+            false => 'false',
+            default => 'null'
+        };
+        $cacheKey = $scope->getId() . '/' . $type . '/' . $isSecure;
+        
+        return $this->cache[$cacheKey] ??= $this->processBaseUrl($scope, $baseUrl, $type, $secure);
     }
 
-    private function process(
-        ScopeInterface $subject,
+    private function processBaseUrl(
+        ScopeInterface $scope,
         string $baseUrl,
         string $type = UrlInterface::URL_TYPE_LINK,
         ?bool $secure = null
     ) {
-        return $type === UrlInterface::URL_TYPE_LINK && $subject instanceof StoreInterface && $this->config->isEnabled()
-            ? $this->uriUtils->replaceScopeCode($baseUrl, $subject)
+        return $type === UrlInterface::URL_TYPE_LINK && $scope instanceof StoreInterface && $this->config->isEnabled()
+            ? $this->uriUtils->replaceScopeCode($baseUrl, $scope)
             : $baseUrl;
     }
 }
