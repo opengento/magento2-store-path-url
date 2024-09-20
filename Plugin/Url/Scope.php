@@ -23,15 +23,15 @@ class Scope
     ) {}
 
     public function afterGetBaseUrl(
-        ScopeInterface $subject,
+        ScopeInterface $scope,
         string $baseUrl,
         string $type = UrlInterface::URL_TYPE_LINK,
         ?bool $secure = null
     ): string {
-        return $this->cache[$subject->getId()][(int)$secure] ??= $this->processUrl($subject, $baseUrl, $type, $secure);
+        return $this->cache[$scope->getId()][$type][(int)$secure] ??= $this->process($scope, $baseUrl, $type, $secure);
     }
 
-    private function processUrl(
+    private function process(
         ScopeInterface $subject,
         string $baseUrl,
         string $type = UrlInterface::URL_TYPE_LINK,
