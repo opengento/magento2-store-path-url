@@ -44,14 +44,11 @@ class StorePathInfoValidator
     {
         $uri = strtok($request->getUriString(), '?') . '/';
         if ($uri !== false) {
-            if ($pathInfo === '') {
-                $pathInfo = parse_url($uri, PHP_URL_PATH);
-                if ($pathInfo === false) {
-                    return '';
-                }
-                $pathInfo = strtok($pathInfo, '/');
+            $pathInfo = $pathInfo ?: parse_url($uri, PHP_URL_PATH);
+            if ($pathInfo === false) {
+                return '';
             }
-            $pathInfo = $pathInfo === false ? $this->resolveByWebUrl($uri) : $this->resolveByLinkUrl($uri);
+            $pathInfo = $this->resolveByLinkUrl($uri) ?: $this->resolveByWebUrl($uri);
         }
 
         return $pathInfo;
@@ -59,14 +56,22 @@ class StorePathInfoValidator
 
     private function resolveByLinkUrl(string $uri): string
     {
+        $storeCode = '';
         /** @var Store $store */
         foreach ($this->storeRepository->getList() as $store) {
-            if ($store->getId() && str_starts_with($uri, $store->getBaseUrl())) {
-                return $store->getCode();
+            if ($store->getId()) {
+                $storeBaseUrl = $store->getBaseUrl();
+                if (str_starts_with($uri, $storeBaseUrl)) {
+                    $path = trim((string)parse_url($storeBaseUrl, PHP_URL_PATH), '/');
+                    $storeCode = $store->getCode();
+                    if ($path !== '') {
+                        return $storeCode;
+                    }
+                }
             }
         }
 
-        return '';
+        return $storeCode;
     }
 
     private function resolveByWebUrl(string $uri): string
