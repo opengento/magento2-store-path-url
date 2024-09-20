@@ -15,6 +15,8 @@ use Opengento\StorePathUrl\Service\UriUtils;
 
 class Scope
 {
+    private array $cache = [];
+
     public function __construct(
         private Config $config,
         private UriUtils $uriUtils
@@ -26,6 +28,15 @@ class Scope
         string $type = UrlInterface::URL_TYPE_LINK,
         ?bool $secure = null
     ): string {
+        return $this->cache[$subject->getId()][(int)$secure] ??= $this->processUrl($subject, $baseUrl, $type, $secure);
+    }
+
+    private function processUrl(
+        ScopeInterface $subject,
+        string $baseUrl,
+        string $type = UrlInterface::URL_TYPE_LINK,
+        ?bool $secure = null
+    ) {
         return $type === UrlInterface::URL_TYPE_LINK && $subject instanceof StoreInterface && $this->config->isEnabled()
             ? $this->uriUtils->replaceScopeCode($baseUrl, $subject)
             : $baseUrl;
