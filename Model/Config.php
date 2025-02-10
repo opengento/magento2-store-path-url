@@ -29,9 +29,14 @@ class Config
         private SerializerInterface $serializer
     ) {}
 
+    public function isStoreInPath(): bool
+    {
+        return $this->scopeConfig->isSetFlag(Store::XML_PATH_STORE_IN_URL);
+    }
+
     public function isEnabled(): bool
     {
-        return $this->scopeConfig->isSetFlag(Store::XML_PATH_STORE_IN_URL)
+        return $this->isStoreInPath()
             && ($this->getStorePathType() !== PathType::StoreCode || $this->isUnsetSingleStorePath());
     }
 
