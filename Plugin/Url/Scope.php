@@ -35,15 +35,11 @@ class Scope
         };
         $cacheKey = $scope->getId() . '/' . $type . '/' . $isSecure;
         
-        return $this->cache[$cacheKey] ??= $this->processBaseUrl($scope, $baseUrl, $type, $secure);
+        return $this->cache[$cacheKey] ??= $this->processBaseUrl($scope, $baseUrl, $type);
     }
 
-    private function processBaseUrl(
-        ScopeInterface $scope,
-        string $baseUrl,
-        string $type = UrlInterface::URL_TYPE_LINK,
-        ?bool $secure = null
-    ) {
+    private function processBaseUrl(ScopeInterface $scope, string $baseUrl, string $type): string
+    {
         return $type === UrlInterface::URL_TYPE_LINK && $scope instanceof StoreInterface && $this->config->isEnabled()
             ? $this->uriUtils->replaceScopeCode($baseUrl, $scope)
             : $baseUrl;
