@@ -36,14 +36,13 @@ class StorePathInfoValidator
             $storeCode = $this->resolveStoreCode($request, $pathInfo);
             $pathInfo = $storeCode === '' ? $pathInfo : $storeCode;
         }
-        $this->stack--;
 
         return [$request, $pathInfo];
     }
     
     public function afterGetValidStoreCode(Subject $subject, ?string $store, Http $request, string $path = ''): ?string
     {
-        if (!$this->config->isStoreInPath() && $this->config->isBaseUrlResolverEnabled()) {
+        if ($this->stack === 1 && !$this->config->isStoreInPath() && $this->config->isBaseUrlResolverEnabled()) {
             try {
                 $store = $this->storeRepository->getActiveStoreByCode(
                     $this->resolveStoreCode($request, $path)
@@ -52,6 +51,7 @@ class StorePathInfoValidator
                 $store = null;
             }
         }
+        $this->stack--;
 
         return $store;
     }
