@@ -92,27 +92,39 @@ class StorePathInfoValidator
 
     private function resolveByWebUrl(string $uri): string
     {
-        $matches = [];
+        $storeMatch = null;
+        $highestScore = 0;
 
         /** @var Store $store */
         foreach ($this->storeRepository->getList() as $store) {
             if ($store->getId() && str_starts_with($uri, $store->getBaseUrl(UrlInterface::URL_TYPE_WEB))) {
                 try {
-                    $website = $store->getWebsite();
-                    if ($website->getIsDefault()) {
-                        if ($store->isDefault()) {
-                            return $store->getCode();
-                        }
-                        $matches[0] = $store->getCode();
-                    } elseif ($store->isDefault()) {
-                        $matches[1] = $store->getCode();
-                    } else {
-                        $matches[2] = $store->getCode();
+                    $score = $this->calculatePreferenceScore($store);
+                    $storeMatch ??= $store->getCode();
+                    if ($highestScore < $score) {
+                        $highestScore = $score;
+                        $storeMatch = $store->getCode();
                     }
                 } catch (NoSuchEntityException) {}
             }
         }
 
-        return $matches[0] ?? $matches[1] ?? $matches[2] ?? '';
+        return $storeMatch ?? '';
+    }
+
+    /**
+     * @throws NoSuchEntityException
+     */
+    private function calculatePreferenceScore(Store $store): int
+    {
+        $website = $store->getWebsite();
+        // Bonus point for the stores which are part of one of the groups from the default website.
+        $score = $website->getIsDefault() ? 2 : 0;
+        // Extra point for the stores which are part of the default group of its website.
+        $score += (int)$website->getDefaultGroup()->getDefaultStoreId() === (int)$store->getId() ? 1 : 0;
+        // Extra point is the store is the default one of its group.
+        $score += $store->isDefault() ? 1 : 0;
+
+        return $score;
     }
 }
