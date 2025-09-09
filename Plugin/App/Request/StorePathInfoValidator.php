@@ -99,6 +99,9 @@ class StorePathInfoValidator
             if ($store->getId() && str_starts_with($uri, $store->getBaseUrl(UrlInterface::URL_TYPE_WEB))) {
                 try {
                     $website = $store->getWebsite();
+                    if($website->getDefaultGroup()->getDefaultStore()->getCode() === $store->getCode()){
+                        return $store->getCode();
+                    }
                     if ($website->getIsDefault()) {
                         if ($store->isDefault()) {
                             return $store->getCode();
