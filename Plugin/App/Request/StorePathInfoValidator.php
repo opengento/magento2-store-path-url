@@ -121,13 +121,13 @@ class StorePathInfoValidator
         $website = $store->getWebsite();
         if ($website->getIsDefault()) {
             // Bonus point for the stores which are part of one of the groups from the default website.
-            $score = in_array($store->getGroupId(), $website->getGroupIds() ? 2 : 1;
+            $score = in_array($store->getGroupId(), $website->getGroupIds()) ? 2 : 1;
         }
         // Extra point for the stores which are part of the default group of its website.
-        $score += (int)$website->getDefaultGroup()->getDefaultStoreId() === (int)$store->getId() ? 1 : 0
+        $score += (int)$website->getDefaultGroup()->getDefaultStoreId() === (int)$store->getId() ? 1 : 0;
         // Extra point is the store is the default one of its group.
         $score += $store->isDefault() ? 1 : 0;
-        
+
         return $score;
     }
 }
