@@ -117,12 +117,9 @@ class StorePathInfoValidator
      */
     private function calculatePreferenceScore(Store $store): int
     {
-        $score = 0;
         $website = $store->getWebsite();
-        if ($website->getIsDefault()) {
-            // Bonus point for the stores which are part of one of the groups from the default website.
-            $score = in_array($store->getGroupId(), $website->getGroupIds()) ? 2 : 1;
-        }
+        // Bonus point for the stores which are part of one of the groups from the default website.
+        $score = $website->getIsDefault() ? 2 : 0;
         // Extra point for the stores which are part of the default group of its website.
         $score += (int)$website->getDefaultGroup()->getDefaultStoreId() === (int)$store->getId() ? 1 : 0;
         // Extra point is the store is the default one of its group.
