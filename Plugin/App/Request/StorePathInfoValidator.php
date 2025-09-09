@@ -92,36 +92,42 @@ class StorePathInfoValidator
 
     private function resolveByWebUrl(string $uri): string
     {
-        $matches = [];
+        $storeMatch = null;
+        $highestScore = 0;
 
         /** @var Store $store */
         foreach ($this->storeRepository->getList() as $store) {
             if ($store->getId() && str_starts_with($uri, $store->getBaseUrl(UrlInterface::URL_TYPE_WEB))) {
                 try {
-                    $website = $store->getWebsite();
-                    if ($website->getIsDefault()) {
-                        if ((int)$website->getDefaultGroup()->getDefaultStoreId() === (int)$store->getId()) {
-                            // If it's the default store from the default group of the default website
-                            return $store->getCode();
-                        }
-                        if (!isset($matches[0]) && $store->isDefault()) {
-                            // If it's the default store from any group of the default website
-                            $matches[0] = $store->getCode();
-                        } elseif (!isset($matches[1])) {
-                            // If it's any store from the default website
-                            $matches[1] = $store->getCode();
-                        }
-                    } elseif (!isset($matches[2]) && $store->isDefault()) {
-                        // If nothing match, any default store has the priority
-                        $matches[2] = $store->getCode();
-                    } elseif (!isset($matches[3])) {
-                        // If nothing match, we use the first store we found
-                        $matches[3] = $store->getCode();
+                    $score = $this->calculatePreferenceScore($store);
+                    $storeMatch ??= $store->getCode();
+                    if ($highestScore < $score) {
+                        $highestScore = $score;
+                        $storeMatch = $store->getCode();
                     }
                 } catch (NoSuchEntityException) {}
             }
         }
 
-        return $matches[0] ?? $matches[1] ?? $matches[2] ?? $matches[3] ?? '';
+        return $storeMatch ?? '';
+    }
+
+    /**
+     * @throws NoSuchEntityException
+     */
+    private function calculatePreferenceScore(Store $store): int
+    {
+        $score = 0;
+        $website = $store->getWebsite();
+        if ($website->getIsDefault()) {
+            // Bonus point for the stores which are part of one of the groups from the default website.
+            $score = in_array($store->getGroupId(), $website->getGroupIds() ? 2 : 1;
+        }
+        // Extra point for the stores which are part of the default group of its website.
+        $score += (int)$website->getDefaultGroup()->getDefaultStoreId() === (int)$store->getId() ? 1 : 0
+        // Extra point is the store is the default one of its group.
+        $score += $store->isDefault() ? 1 : 0;
+        
+        return $score;
     }
 }
