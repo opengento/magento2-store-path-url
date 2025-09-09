@@ -99,23 +99,29 @@ class StorePathInfoValidator
             if ($store->getId() && str_starts_with($uri, $store->getBaseUrl(UrlInterface::URL_TYPE_WEB))) {
                 try {
                     $website = $store->getWebsite();
-                    if($website->getDefaultGroup()->getDefaultStore()->getCode() === $store->getCode()){
-                        return $store->getCode();
-                    }
                     if ($website->getIsDefault()) {
-                        if ($store->isDefault()) {
+                        if ((int)$website->getDefaultGroup()->getDefaultStoreId() === (int)$store->getId()) {
+                            // If it's the default store from the default group of the default website
                             return $store->getCode();
                         }
-                        $matches[0] = $store->getCode();
-                    } elseif ($store->isDefault()) {
-                        $matches[1] = $store->getCode();
-                    } else {
+                        if (!isset($matches[0]) && $store->isDefault()) {
+                            // If it's the default store from any group of the default website
+                            $matches[0] = $store->getCode();
+                        } elseif (!isset($matches[1])) {
+                            // If it's any store from the default website
+                            $matches[1] = $store->getCode();
+                        }
+                    } elseif (!isset($matches[2]) && $store->isDefault()) {
+                        // If nothing match, any default store has the priority
                         $matches[2] = $store->getCode();
+                    } elseif (!isset($matches[3])) {
+                        // If nothing match, we use the first store we found
+                        $matches[3] = $store->getCode();
                     }
                 } catch (NoSuchEntityException) {}
             }
         }
 
-        return $matches[0] ?? $matches[1] ?? $matches[2] ?? '';
+        return $matches[0] ?? $matches[1] ?? $matches[2] ?? $matches[3] ?? '';
     }
 }
