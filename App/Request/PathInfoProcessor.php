@@ -36,17 +36,25 @@ class PathInfoProcessor extends AppPathInfoProcessor
             return $this->subject->process($request, $pathInfo);
         }
 
-        $storeCode = $this->storePathInfoValidator->getValidStoreCode($request, $pathInfo);
+        $storeCode = $this->storePathInfoValidator->getValidStoreCode($request);
         if ($storeCode !== null) {
             try {
-                $path = $this->pathResolver->resolve($this->storeRepository->getActiveStoreByCode($storeCode));
+                $storePath = $this->pathResolver->resolve($this->storeRepository->getActiveStoreByCode($storeCode));
             } catch (LocalizedException) {
                 return $pathInfo;
             }
-            if (!$request->isDirectAccessFrontendName($path)) {
-                $pathInfo = substr($pathInfo, strlen($path) + (int)str_starts_with($pathInfo, '/')) ?: '/';
+            if (!$request->isDirectAccessFrontendName($storePath)) {
+                // Armored test to prevent cases where the path wouldn't start by a "/" when it's expected.
+                if (str_starts_with($pathInfo, '/')) {
+                    $storePath = '/' . $storePath;
+                }
+                // Prevent to trim a part where the store path could be included.
+                // E.g: We assume we have the store path "fr", we don't want to trim the "fr" of "/franchise".
+                if (str_starts_with($pathInfo . '/', $storePath . '/')) {
+                    $pathInfo = substr($pathInfo, strlen($storePath)) ?: '/';
+                }
             } else {
-                //no route in case we're trying to access a store that has the same code as a direct access
+                // No route in case we're trying to access a store that has the same code as a direct access.
                 $request->setActionName(Base::NO_ROUTE);
             }
         }

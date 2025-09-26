@@ -8,7 +8,6 @@ declare(strict_types=1);
 namespace Opengento\StorePathUrl\Plugin\App\Request;
 
 use Magento\Framework\App\Request\Http;
-use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\UrlInterface;
 use Magento\Store\Api\StoreRepositoryInterface;
@@ -23,6 +22,8 @@ use const PHP_URL_PATH;
 
 class StorePathInfoValidator
 {
+    // This hack is necessary to prevent infinite loop because of https://github.com/opengento/magento2-store-path-url/issues/3
+    // The fix is shipped in the version 2.4.9 of Magento: https://github.com/magento/magento2/pull/38717
     private int $stack = 0;
 
     public function __construct(
@@ -32,47 +33,42 @@ class StorePathInfoValidator
 
     public function beforeGetValidStoreCode(Subject $subject, Http $request, string $pathInfo = ''): array
     {
-        if (++$this->stack === 1 && $this->config->isStoreInPath() && $this->config->isBaseUrlResolverEnabled()) {
-            $storeCode = $this->resolveStoreCode($request, $pathInfo);
-            $pathInfo = $storeCode === '' ? $pathInfo : $storeCode;
+        // If $pathInfo is empty, we are resolving the current scope ID.
+        // It could also be the path info processor which tries to trim the store path from the url.
+        if (++$this->stack === 1 && $pathInfo === '' && $this->config->isStoreInPath() && $this->config->isBaseUrlResolverEnabled()) {
+            $pathInfo = $this->resolveStoreCode($request);
         }
 
         return [$request, $pathInfo];
     }
-    
+
     public function afterGetValidStoreCode(Subject $subject, ?string $store, Http $request, string $path = ''): ?string
     {
-        if ($this->stack === 1 && !$this->config->isStoreInPath() && $this->config->isBaseUrlResolverEnabled()) {
-            try {
-                $store = $this->storeRepository->getActiveStoreByCode(
-                    $this->resolveStoreCode($request, $path)
-                )->getCode();
-            } catch (LocalizedException) {
-                $store = null;
-            }
-        }
         $this->stack--;
 
         return $store;
     }
 
-    private function resolveStoreCode(Http $request, string $pathInfo): string
+    private function resolveStoreCode(Http $request): string
     {
         $uri = strtok($request->getUriString(), '?') . '/';
         if ($uri !== false) {
-            $pathInfo = $pathInfo ?: parse_url($uri, PHP_URL_PATH);
+            $pathInfo = parse_url($uri, PHP_URL_PATH);
             if ($pathInfo === false) {
                 return '';
             }
-            $pathInfo = $this->resolveByLinkUrl($uri) ?: $this->resolveByWebUrl($uri);
+            // The uri has a valid format, we can look for the matching store base url.
+            $pathInfo = $this->resolveByLinkUrl($uri);
+            // If the store cannot be resolved, with look for the closest lookalike store.
+            return $pathInfo !== false ? $pathInfo : $this->resolveByWebUrl($uri);
         }
 
-        return $pathInfo;
+        return '';
     }
 
-    private function resolveByLinkUrl(string $uri): string
+    private function resolveByLinkUrl(string $uri): bool|string
     {
-        $storeCode = '';
+        $storeCode = false;
         /** @var Store $store */
         foreach ($this->storeRepository->getList() as $store) {
             if ($store->getId()) {
@@ -100,7 +96,9 @@ class StorePathInfoValidator
             if ($store->getId() && str_starts_with($uri, $store->getBaseUrl(UrlInterface::URL_TYPE_WEB))) {
                 try {
                     $score = $this->calculatePreferenceScore($store);
-                    $storeMatch ??= $store->getCode();
+                    if ($storeMatch === null) {
+                        $storeMatch = $store->getCode();
+                    }
                     if ($highestScore < $score) {
                         $highestScore = $score;
                         $storeMatch = $store->getCode();
